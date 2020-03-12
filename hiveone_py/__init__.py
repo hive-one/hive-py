@@ -193,6 +193,14 @@ class Hive:
             pass
     
     def influencer_batch(self, influencer_ids = [], rank_type = 'all', include_followers = 0):
+        if not influencer_ids:
+            raise Exception('influencerIDS not provided')
+        if rank_type not in ['all', 'personal']:
+            raise Exception('Rank Type not one of all, personal')
+        if include_followers not in [0, 1]:
+            raise Exception('Include Followres not one of 0, 1')
+        
+
         response = requests.get(
             "{host}api/v1/influencers/batch/".format(
                 host=self.host,
