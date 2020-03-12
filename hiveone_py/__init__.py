@@ -85,6 +85,12 @@ class Hive:
         else:
             if id_format not in ["screen_name", "id"]:
                 raise Exception("{passed_id_format} is not one of: screen_name, id".format(passed_id_format=id_format))
+        
+        if rank_type not in ['all', 'personal']:
+            raise Exception('Rank Type not one of all, personal')
+        if include_followers not in [0, 1]:
+            raise Exception('Include Followres not one of 0, 1')
+
         response = requests.get(
             "{host}api/v1/influencers/{id_format}/{influencer_id}".format(
                 host=self.host,
