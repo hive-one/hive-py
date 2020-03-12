@@ -76,8 +76,38 @@ class Hive:
         else:
             pass
     
-    def influencer_details(self):
-        pass
+    def influencer_details(self, influencer_id = None, id_format = None, rank_type = 'all', include_followers = 0, etag = ''):
+        if influencer_id is None:
+            raise Exception('You must provide an influencers ID')
+        if id_format is None:
+            id_format = self.default_format
+        else:
+            if id_format not in ["screen_name", "id"]:
+                raise Exception("{passed_id_format} is not one of: screen_name, id".format(passed_id_format=id_format))
+        response = requests.get(
+            "{host}api/v1/influencers/{id_format}/{influencer_id}".format(
+                host=self.host,
+                id_format=id_format,
+                influencer_id=influencer_id
+            ),
+            headers={
+                "Authorization": "Token {api_key}".format(api_key=self.api_key),
+                "If-None-Match": etag
+            },
+            params=(
+                ('rank_type', rank_type),
+                ('include_followers', include_followers),
+            )
+        )
+
+        if response.status_code == 200:
+            data = response.json()
+            
+            return data
+        elif response.status_code == 304:
+            return True
+        else:
+            pass
     
     def influencer_history(self):
         pass
