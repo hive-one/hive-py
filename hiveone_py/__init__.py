@@ -34,8 +34,47 @@ class Hive:
         else:
             pass
 
-    def top_influencers(self):
-        pass
+    def top_influencers(self, cluster = 'Crypto', after = 0, sort_by = 'rank', order = 'asc', etag = ''):
+        sort_map = [
+            'followers',
+            'following',
+            'screen_name',
+            'change_week',
+            'score',
+            'rank',
+        ]
+        if cluster not in ['Crypto', 'BTC', 'ETH', 'XRP']:
+            raise Exception("{passed_cluster} is not one of: Crypto, BTC, ETH, XRP".format(passed_cluster=cluster))
+        if type(after) != int:
+            raise Exception("after should be type int")
+        if sort_by not in sort_map:
+            raise Exception("Sort: {passed_sort} is not supported`".format(passed_sort=sort_by))
+        if order not in ['asc', 'desc']:
+            raise Exception("Order: {passed_order} is not supported".format(passed_order=order))
+        response = requests.get(
+            "{host}api/v1/influencers/top/".format(host=self.host),
+            headers={
+                "Authorization": "Token {api_key}".format(api_key=self.api_key),
+                "If-None-Match": etag
+            },
+            params=(
+                ('cluster', cluster),
+                ('after', after),
+                ('sort_by', sort_by),
+                ('order', order)
+            )
+        )
+
+        if response.status_code == 200:
+            data = response.json()
+            
+            def return_node(item):
+                return item['node']
+            return list(map(return_node, data['data']['people']['edges']))
+        elif response.status_code == 304:
+            return True
+        else:
+            pass
     
     def influencer_details(self):
         pass
