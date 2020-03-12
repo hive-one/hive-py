@@ -1,6 +1,14 @@
 import requests
 import json
 
+class HiveResponse:
+    def __init__(self, data, etag):
+        self.data = data
+        self.etag = etag
+    
+    def __repr__(self):
+        return repr(self.data)
+
 class Hive:
     def __init__(self, api_key, default_format = 'screen_name', host = 'https://hive.one/'):
         if len(api_key) == 0: raise Exception('You must provide an API Key')
@@ -29,7 +37,11 @@ class Hive:
             
             def return_id(id_arr):
                 return id_arr[0 if self.default_format == 'id' else 1]
-            return list(map(return_id, data['data']['available']))
+
+            return HiveResponse(
+                data=list(map(return_id, data['data']['available'])),
+                etag=response.headers['ETag']
+            )
         elif response.status_code == 304:
             return True
         else:
@@ -71,7 +83,11 @@ class Hive:
             
             def return_node(item):
                 return item['node']
-            return list(map(return_node, data['data']['people']['edges']))
+
+            return HiveResponse(
+                data=list(map(return_node, data['data']['people']['edges'])),
+                etag=response.headers['ETag']
+            )
         elif response.status_code == 304:
             return True
         else:
@@ -110,7 +126,10 @@ class Hive:
         if response.status_code == 200:
             data = response.json()
             
-            return data
+            return HiveResponse(
+                data=data,
+                etag=response.headers['ETag']
+            )
         elif response.status_code == 304:
             return True
         else:
@@ -146,7 +165,10 @@ class Hive:
         if response.status_code == 200:
             data = response.json()
             
-            return data
+            return HiveResponse(
+                data=data,
+                etag=response.headers['ETag']
+            )
         elif response.status_code == 304:
             return True
         else:
@@ -164,7 +186,7 @@ class Hive:
         
         if appearance_type not in []:
             raise Exception('Appearance Type not one of all, host, guest')
-        if type(after) not int:
+        if type(after) != int:
             raise Exception('after should be type int')
         
         response = requests.get(
@@ -186,7 +208,10 @@ class Hive:
         if response.status_code == 200:
             data = response.json()
             
-            return data
+            return HiveResponse(
+                data=data,
+                etag=response.headers['ETag']
+            )
         elif response.status_code == 304:
             return True
         else:
@@ -218,7 +243,10 @@ class Hive:
         if response.status_code == 200:
             data = response.json()
             
-            return data['data']['success']
+            return HiveResponse(
+                data=data['data']['success'],
+                etag=response.headers['ETag']
+            )
         elif response.status_code == 304:
             return True
         else:
