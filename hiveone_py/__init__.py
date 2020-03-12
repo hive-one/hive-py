@@ -1,4 +1,5 @@
 import requests
+import json
 
 class Hive:
     def __init__(self, api_key, default_format = 'screen_name', host = 'https://hive.one/'):
@@ -177,5 +178,26 @@ class Hive:
         else:
             pass
     
-    def influencer_batch(self):
-        pass
+    def influencer_batch(self, influencer_ids = [], rank_type = 'all', include_followers = 0):
+        response = requests.get(
+            "{host}api/v1/influencers/batch/".format(
+                host=self.host,
+            ),
+            headers={
+                "Authorization": "Token {api_key}".format(api_key=self.api_key)
+            },
+            params=(
+                ('twitter_ids', json.dumps(influencer_ids)),
+                ('rank_type', rank_type),
+                ('include_followers', include_followers),
+            )
+        )
+
+        if response.status_code == 200:
+            data = response.json()
+            
+            return data['data']['success']
+        elif response.status_code == 304:
+            return True
+        else:
+            pass
