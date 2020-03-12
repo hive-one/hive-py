@@ -162,6 +162,11 @@ class Hive:
             if id_format not in ["screen_name", "id"]:
                 raise Exception("{passed_id_format} is not one of: screen_name, id".format(passed_id_format=id_format))
         
+        if appearance_type not in []:
+            raise Exception('Appearance Type not one of all, host, guest')
+        if type(after) not int:
+            raise Exception('after should be type int')
+        
         response = requests.get(
             "{host}api/v1/influencers/{id_format}/{influencer_id}/podcasts/".format(
                 host=self.host,
