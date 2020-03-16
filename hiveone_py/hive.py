@@ -130,7 +130,7 @@ class Hive:
             data = response.json()
             
             return HiveResponse(
-                data=data,
+                data=data['data'],
                 etag=response.headers['ETag']
             )
         elif response.status_code == 304:
