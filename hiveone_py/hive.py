@@ -8,6 +8,9 @@ class HiveResponse:
     
     def __repr__(self):
         return repr(self.data)
+    
+    def __getitem__(self, key):
+        return self.data.__getitem__(key)
 
 class Hive:
     def __init__(self, api_key, default_format = 'screen_name', host = 'https://hive.one/'):
