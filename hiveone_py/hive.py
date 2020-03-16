@@ -39,7 +39,7 @@ class Hive:
             data = response.json()
             
             def return_id(id_arr):
-                return id_arr[0 if self.default_format == 'id' else 1]
+                return id_arr[0 if id_format == 'id' else 1]
 
             return HiveResponse(
                 data=list(map(return_id, data['data']['available'])),
